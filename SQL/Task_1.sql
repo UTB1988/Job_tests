@@ -1,13 +1,16 @@
 -- MS SQL SERVER
 
-/* --- --- Подготовка / Preperation --- --- */
-	
-	/* --- Таблица / Table - 1 - #salepersons --- */
+/*==================================================================================================================================================*/
+/* --- --- Подготовка исходных данных / Preperation of source data --- --- */
+/*==================================================================================================================================================*/
+
+	/* --- #salepersons --- */
+		
 		IF OBJECT_ID('tempdb.dbo.#salepersons', 'U') IS NOT null
 		DROP TABLE #salepersons;
 		
 		CREATE TABLE #salepersons (
-			saleperson_id BIGINT IDENTITY(1, 1)
+			  saleperson_id BIGINT IDENTITY(1, 1)
 			, name VARCHAR(256) NOT null
 			, age TINYINT NOT null);
 		
@@ -17,12 +20,13 @@
 			('Ken',	 41),
 			('Joe',	 28);
 	
-	/* --- Таблица / Table - 2 - #orders --- */
+	/* --- #orders --- */
+		
 		IF OBJECT_ID('tempdb.dbo.#orders', 'U') IS NOT null
 		DROP TABLE #orders;
 		
 		CREATE TABLE #orders (
-			order_number BIGINT IDENTITY(1, 1)
+			  order_number BIGINT IDENTITY(1, 1)
 			, order_date DATE NOT null
 			, customer_id BIGINT NOT null
 			, saleperson_id BIGINT NOT null
@@ -40,21 +44,23 @@
 			('2019-03-14', 6844, 1, 200),
 			('2019-03-15', 6844, 1, 200);	
 
+/*==================================================================================================================================================*/
 /* --- --- Задание / Task --- --- */
+/*==================================================================================================================================================*/
 	
-	-- Используя Таблицы 1 и 2, вывести в отчёт имена продавцов и общую сумму заказов,
-	-- у которых общая сумма заказов больше 500
+	--	Используя таблицы "#salepersons" и "#orders",
+	--	вывести в отчёт имена продавцов и общую сумму заказов,
+	--	у которых общая сумма заказов больше 500
 	
 	SELECT t1.name, SUM(t2.order_amount) AS "order_amount"
 	FROM #salepersons t1
-	INNER JOIN #orders t2 ON t1.saleperson_id = t2.saleperson_id
+		INNER JOIN #orders t2 ON t1.saleperson_id = t2.saleperson_id
 	GROUP BY t1.name
 	HAVING SUM(t2.order_amount) > 500;
 
+/*==================================================================================================================================================*/
 /* --- --- Удалить временные таблицы / Delete temporary tables --- --- */
+/*==================================================================================================================================================*/
 	
-	IF OBJECT_ID('tempdb.dbo.#salepersons', 'U') IS NOT null
-	DROP TABLE #salepersons;
-	
-	IF OBJECT_ID('tempdb.dbo.#orders', 'U') IS NOT null
-	DROP TABLE #orders;
+	IF OBJECT_ID('tempdb.dbo.#salepersons', 'U') IS NOT null DROP TABLE #salepersons;
+	IF OBJECT_ID('tempdb.dbo.#orders', 'U') IS NOT null DROP TABLE #orders;
